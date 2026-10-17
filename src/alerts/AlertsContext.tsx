@@ -2,6 +2,7 @@ import { Client } from '@stomp/stompjs'
 import { createContext, use, useEffect, useMemo, useState, type ReactNode } from 'react'
 import SockJS from 'sockjs-client'
 import { apiClient } from '../api/client'
+import { API_ORIGIN } from '../api/config'
 import type { Alert } from '../types'
 
 interface AlertsContextValue {
@@ -24,7 +25,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const client = new Client({
-      webSocketFactory: () => new SockJS('/ws'),
+      webSocketFactory: () => new SockJS(`${API_ORIGIN}/ws`),
       reconnectDelay: 5000,
     })
 
