@@ -5,6 +5,7 @@ import { AddWidgetForm } from './AddWidgetForm'
 import { ChartWidgetCard } from './ChartWidgetCard'
 import type { ChartType, MetricId } from './metrics'
 import { DEFAULT_LAYOUT, type DashboardLayout, type Widget } from './Widget'
+import { WidgetErrorBoundary } from './WidgetErrorBoundary'
 
 function parseLayout(layoutJson: string | undefined): DashboardLayout {
   if (!layoutJson) return DEFAULT_LAYOUT
@@ -99,13 +100,14 @@ export function DashboardHome() {
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {widgets.map((widget) => (
-            <ChartWidgetCard
-              key={widget.id}
-              widget={widget}
-              alerts={alerts}
-              editing={editing}
-              onRemove={() => removeWidget(widget.id)}
-            />
+            <WidgetErrorBoundary key={widget.id} editing={editing} onRemove={() => removeWidget(widget.id)}>
+              <ChartWidgetCard
+                widget={widget}
+                alerts={alerts}
+                editing={editing}
+                onRemove={() => removeWidget(widget.id)}
+              />
+            </WidgetErrorBoundary>
           ))}
         </div>
       )}

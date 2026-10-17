@@ -43,10 +43,14 @@ export const METRICS: MetricDef[] = [
   { id: 'accounts_by_bank', label: 'Accounts by bank', chartTypes: ['bar', 'pie'], source: 'backend' },
 ]
 
-export function metricById(id: MetricId): MetricDef {
-  const metric = METRICS.find((m) => m.id === id)
-  if (!metric) throw new Error(`Unknown metric: ${id}`)
-  return metric
+/**
+ * Widget layouts round-trip through the backend as opaque, user-editable JSON (see
+ * DashboardController) — a saved widget can reference a metric id that no longer exists
+ * (removed from the catalog, or malformed from manual API testing). Returns undefined
+ * rather than throwing, so one bad widget can't crash the whole dashboard render.
+ */
+export function metricById(id: MetricId): MetricDef | undefined {
+  return METRICS.find((m) => m.id === id)
 }
 
 function dayKey(iso: string): string {
